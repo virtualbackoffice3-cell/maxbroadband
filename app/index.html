@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MaxBroadband Test</title>
+
+<style>
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    max-width:500px;
+    margin:40px auto;
+}
+
+input{
+    width:100%;
+    padding:10px;
+    margin:8px 0;
+    font-size:16px;
+    box-sizing:border-box;
+}
+
+button{
+    padding:10px 20px;
+    font-size:16px;
+    cursor:pointer;
+}
+
+#result{
+    margin-top:20px;
+    padding:15px;
+    border:1px solid #ddd;
+    white-space:pre-wrap;
+}
+</style>
+
+</head>
+<body>
+
+<h2>MaxBroadband Login Test</h2>
+
+<input
+id="loginid"
+type="text"
+placeholder="Login ID">
+
+<input
+id="password"
+type="password"
+placeholder="Password">
+
+<button onclick="login()">Login</button>
+
+<div id="result"></div>
+
+<script>
+
+const API_URL="https://script.google.com/macros/s/AKfycbzWi2x4UZiRpmOGsx5fCsBOaH9tG3mG81Mv1aFG2BUrvxnAa3AdLWZ3X69BQLiJ2ZZ1gQ/exec";
+
+async function login(){
+
+    const loginid=document.getElementById("loginid").value.trim();
+    const password=document.getElementById("password").value.trim();
+
+    document.getElementById("result").innerHTML="Loading...";
+
+    try{
+
+        const url=
+        API_URL+
+        "?action=login"+
+        "&loginid="+encodeURIComponent(loginid)+
+        "&password="+encodeURIComponent(password);
+
+        const response=await fetch(url);
+
+        const data=await response.json();
+
+        if(data.success){
+
+            document.getElementById("result").innerHTML=
+`Customer Name : ${data.data["Customer Name"]}
+
+Customer ID : ${data.data["Customer ID"]}
+
+Contact No : ${data.data["Contact No"]}
+
+Mail ID : ${data.data["Mail ID"]}`;
+
+        }else{
+
+            document.getElementById("result").innerHTML=data.message;
+
+        }
+
+    }catch(err){
+
+        document.getElementById("result").innerHTML=err;
+
+    }
+
+}
+
+</script>
+
+</body>
+</html>
