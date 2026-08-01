@@ -1,181 +1,175 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MaxBroadband Login Test</title>
-
-<style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial,Helvetica,sans-serif;
-}
-
-body{
-    background:#f5f5f5;
-    padding:40px;
-}
-
-.container{
-    max-width:800px;
-    margin:auto;
-}
-
-.card{
-    background:#fff;
-    padding:25px;
-    border-radius:10px;
-    box-shadow:0 2px 10px rgba(0,0,0,.1);
-}
-
-input{
-    width:100%;
-    padding:12px;
-    margin:10px 0;
-    font-size:16px;
-}
-
-button{
-    padding:12px 25px;
-    cursor:pointer;
-    font-size:16px;
-}
-
-#error{
-    color:red;
-    margin-top:15px;
-    font-weight:bold;
-}
-
-#dashboard{
-    display:none;
-    margin-top:30px;
-}
-
-table{
-    width:100%;
-    border-collapse:collapse;
-}
-
-td{
-    padding:10px;
-    border-bottom:1px solid #eee;
-}
-
-td:first-child{
-    width:220px;
-    font-weight:bold;
-    background:#fafafa;
-}
-</style>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#0a63ff">
+    <meta name="description" content="MaxBroadband customer portal for profile and plan details.">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="MaxBroadband">
+    <title>MaxBroadband</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="assets/icon-192.png">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+    <div id="splash" class="splash" aria-hidden="true">
+        <div class="brand-mark brand-mark-lg">MB</div>
+        <div class="splash-loader"></div>
+    </div>
 
-<div class="container">
+    <main class="phone-shell" id="app">
+        <section class="screen login-screen is-active" id="loginScreen" aria-labelledby="loginTitle">
+            <div class="login-bg"></div>
+            <div class="login-content">
+                <div class="brand-row">
+                    <div class="brand-mark" aria-label="MaxBroadband logo">MB</div>
+                    <div>
+                        <p class="eyebrow">MaxBroadband</p>
+                        <h1 id="loginTitle">Welcome back</h1>
+                    </div>
+                </div>
 
-<div class="card">
+                <p class="login-subtitle">Manage your broadband plan, profile and service details in one secure app.</p>
 
-<h2>Login</h2>
+                <form id="loginForm" class="login-card" autocomplete="on">
+                    <label class="field">
+                        <span>Login ID</span>
+                        <input id="loginid" name="loginid" type="text" inputmode="text" autocomplete="username" placeholder="Enter your login id/Mobile no" required>
+                    </label>
 
-<input id="loginid" placeholder="Login ID">
+                    <label class="field password-field">
+                        <span>Password</span>
+                        <div class="password-wrap">
+                            <input id="password" name="password" type="password" autocomplete="current-password" placeholder="Enter password" required>
+                            <button class="icon-btn" id="togglePassword" type="button" aria-label="Show password">
+                                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5c5 0 9 5.2 9 7s-4 7-9 7-9-5.2-9-7 4-7 9-7Zm0 11.5A4.5 4.5 0 1 0 12 7a4.5 4.5 0 0 0 0 9.5Zm0-2A2.5 2.5 0 1 1 12 9a2.5 2.5 0 0 1 0 5.5Z"/></svg>
+                            </button>
+                        </div>
+                    </label>
 
-<input id="password" type="password" placeholder="Password">
+                    <div class="form-options">
+                        <label class="checkline">
+                            <input id="rememberLogin" type="checkbox">
+                            <span>Remember Login</span>
+                        </label>
+                    </div>
 
-<button onclick="login()">Login</button>
+                    <div id="loginError" class="error-message" role="alert"></div>
 
-<div id="error"></div>
+                    <button id="loginButton" class="primary-btn" type="submit">
+                        <span>Login Securely</span>
+                        <span class="btn-spinner" aria-hidden="true"></span>
+                    </button>
+                </form>
 
-<div id="dashboard">
+                <div class="trust-strip">
+                    <span></span>
+                    <p>Protected customer access via MaxBroadband</p>
+                </div>
 
-<h2 style="margin:20px 0;">Customer Details</h2>
+                <p class="copyright">All rights reserved MaxBroadband</p>
+            </div>
+        </section>
 
-<table>
+        <section class="screen home-screen" id="homeScreen" aria-label="Customer dashboard">
+            <div class="pull-indicator" id="pullIndicator">Release to refresh</div>
 
-<tr><td>Customer Name</td><td id="customerName"></td></tr>
-<tr><td>Customer ID</td><td id="customerId"></td></tr>
-<tr><td>Contact No</td><td id="contactNo"></td></tr>
-<tr><td>Mail ID</td><td id="mailId"></td></tr>
-<tr><td>Address</td><td id="address"></td></tr>
-<tr><td>Plan Home</td><td id="planHome"></td></tr>
-<tr><td>Plan B</td><td id="planB"></td></tr>
-<tr><td>OTT Plan</td><td id="ottPlan"></td></tr>
-<tr><td>TV Plan</td><td id="tvPlan"></td></tr>
-<tr><td>Device Detail</td><td id="deviceDetail"></td></tr>
-<tr><td>Installation Date</td><td id="installationDate"></td></tr>
-<tr><td>Recharge Date</td><td id="rechargeDate"></td></tr>
-<tr><td>Expiry Date</td><td id="expiryDate"></td></tr>
+            <header class="home-header">
+                <div>
+                    <p class="greeting" id="greeting">Good Morning</p>
+                    <h2 id="headerName">Customer</h2>
+                    <p class="customer-id" id="headerCustomerId">ID</p>
+                </div>
+                <div class="header-actions">
+                    <button class="install-btn" id="installButton" type="button">Install</button>
+                    <button class="logout-btn" id="logoutButton" type="button">Logout</button>
+                    <button class="avatar" id="avatar" type="button" aria-label="Customer account">MB</button>
+                </div>
+            </header>
 
-</table>
+            <div class="status-card">
+                <div>
+                    <p>Connection Status</p>
+                    <h3 id="connectionStatus">Checking</h3>
+                </div>
+                <span class="status-badge" id="statusBadge">-</span>
+            </div>
 
-</div>
+            <div class="success-toast" id="successToast" role="status">
+                <span class="checkmark"></span>
+                Login successful
+            </div>
 
-</div>
+            <section class="tab-panel is-active" id="profileTab" aria-labelledby="profileNav">
+                <div class="section-heading">
+                    <p>Account</p>
+                    <h3>Profile</h3>
+                </div>
+                <div class="cards-grid" id="profileCards"></div>
+            </section>
 
-</div>
+            <section class="tab-panel" id="planTab" aria-labelledby="planNav">
+                <div class="section-heading">
+                    <p>Subscription</p>
+                    <h3>My Plan</h3>
+                </div>
+                <div class="plan-hero">
+                    <div>
+                        <p>Primary plan</p>
+                        <h3 id="planTitle">Broadband Plan</h3>
+                        <small id="daysLeft">Plan validity unavailable</small>
+                    </div>
+                    <span class="status-badge" id="planStatus">-</span>
+                </div>
+                <div class="cards-grid" id="planCards"></div>
+            </section>
 
-<script>
+            <div class="empty-state" id="emptyState">
+                <div class="empty-icon">!</div>
+                <h3>No details found</h3>
+                <p>Your account is connected, but these details are not available yet.</p>
+            </div>
 
-const API_URL="https://script.google.com/macros/s/AKfycbzWi2x4UZiRpmOGsx5fCsBOaH9tG3mG81Mv1aFG2BUrvxnAa3AdLWZ3X69BQLiJ2ZZ1gQ/exec";
+            <nav class="bottom-nav" aria-label="Primary navigation">
+                <button class="nav-btn is-active" id="profileNav" type="button" data-tab="profileTab">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0 2c-4.4 0-8 2.2-8 5v1h16v-1c0-2.8-3.6-5-8-5Z"/></svg>
+                    <span>Profile</span>
+                </button>
+                <button class="nav-btn" id="planNav" type="button" data-tab="planTab">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Zm2 4v2h10V8H7Zm0 4v2h7v-2H7Z"/></svg>
+                    <span>My Plan</span>
+                </button>
+            </nav>
+        </section>
+    </main>
 
-async function login(){
+    <div class="install-overlay" id="installOverlay" hidden>
+        <div class="install-sheet" role="dialog" aria-modal="true" aria-labelledby="installTitle">
+            <div class="install-sheet-top">
+                <div class="brand-mark">MB</div>
+                <button class="sheet-close" id="closeInstallSheet" type="button" aria-label="Close install popup">x</button>
+            </div>
+            <h2 id="installTitle">Install MaxBroadband</h2>
+            <p>Get quick access to your profile, plan validity and broadband details from your home screen.</p>
+            <div class="install-actions">
+                <button class="secondary-btn" id="cancelInstall" type="button">Later</button>
+                <button class="primary-btn compact" id="confirmInstall" type="button">
+                    <span>Install App</span>
+                    <span class="btn-spinner" aria-hidden="true"></span>
+                </button>
+            </div>
+        </div>
+    </div>
 
-    document.getElementById("error").innerHTML="";
-    document.getElementById("dashboard").style.display="none";
+    <template id="skeletonTemplate">
+        <div class="detail-card skeleton"></div>
+        <div class="detail-card skeleton"></div>
+        <div class="detail-card skeleton"></div>
+    </template>
 
-    const loginid=document.getElementById("loginid").value.trim();
-    const password=document.getElementById("password").value.trim();
-
-    try{
-
-        const url=API_URL+
-        "?action=login"+
-        "&loginid="+encodeURIComponent(loginid)+
-        "&password="+encodeURIComponent(password);
-
-        const response=await fetch(url);
-
-        const text=await response.text();
-
-        const result=JSON.parse(text);
-
-        if(!result.success){
-
-            document.getElementById("error").innerHTML=result.message;
-            return;
-
-        }
-
-        const d=result.data;
-
-        document.getElementById("customerName").innerText=d["Customer Name"]||"";
-        document.getElementById("customerId").innerText=d["Customer ID"]||"";
-        document.getElementById("contactNo").innerText=d["Contact No"]||"";
-        document.getElementById("mailId").innerText=d["Mail ID"]||"";
-        document.getElementById("address").innerText=d["address"]||"";
-        document.getElementById("planHome").innerText=d["Plan home"]||"";
-        document.getElementById("planB").innerText=d["Plan B"]||"";
-        document.getElementById("ottPlan").innerText=d["OTT Plan"]||"";
-        document.getElementById("tvPlan").innerText=d["TV Plan"]||"";
-        document.getElementById("deviceDetail").innerText=d["Device Detail"]||"";
-        document.getElementById("installationDate").innerText=d["Installation  date"]||"";
-        document.getElementById("rechargeDate").innerText=d["Recharge date"]||"";
-        document.getElementById("expiryDate").innerText=d["Expiry Date"]||"";
-
-        document.getElementById("dashboard").style.display="block";
-
-    }
-    catch(err){
-
-        document.getElementById("error").innerHTML=err;
-
-    }
-
-}
-
-</script>
-
+    <script src="js/app.js" defer></script>
 </body>
 </html>
