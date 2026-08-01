@@ -3,55 +3,118 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MaxBroadband Test</title>
+<title>MaxBroadband Login Test</title>
 
 <style>
-body{
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
     font-family:Arial,Helvetica,sans-serif;
-    max-width:500px;
-    margin:40px auto;
+}
+
+body{
+    background:#f5f5f5;
+    padding:40px;
+}
+
+.container{
+    max-width:800px;
+    margin:auto;
+}
+
+.card{
+    background:#fff;
+    padding:25px;
+    border-radius:10px;
+    box-shadow:0 2px 10px rgba(0,0,0,.1);
 }
 
 input{
     width:100%;
-    padding:10px;
-    margin:8px 0;
+    padding:12px;
+    margin:10px 0;
     font-size:16px;
-    box-sizing:border-box;
 }
 
 button{
-    padding:10px 20px;
-    font-size:16px;
+    padding:12px 25px;
     cursor:pointer;
+    font-size:16px;
 }
 
-#result{
-    margin-top:20px;
-    padding:15px;
-    border:1px solid #ddd;
-    white-space:pre-wrap;
+#error{
+    color:red;
+    margin-top:15px;
+    font-weight:bold;
+}
+
+#dashboard{
+    display:none;
+    margin-top:30px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+td{
+    padding:10px;
+    border-bottom:1px solid #eee;
+}
+
+td:first-child{
+    width:220px;
+    font-weight:bold;
+    background:#fafafa;
 }
 </style>
 
 </head>
 <body>
 
-<h2>MaxBroadband Login Test</h2>
+<div class="container">
 
-<input
-id="loginid"
-type="text"
-placeholder="Login ID">
+<div class="card">
 
-<input
-id="password"
-type="password"
-placeholder="Password">
+<h2>Login</h2>
+
+<input id="loginid" placeholder="Login ID">
+
+<input id="password" type="password" placeholder="Password">
 
 <button onclick="login()">Login</button>
 
-<div id="result"></div>
+<div id="error"></div>
+
+<div id="dashboard">
+
+<h2 style="margin:20px 0;">Customer Details</h2>
+
+<table>
+
+<tr><td>Customer Name</td><td id="customerName"></td></tr>
+<tr><td>Customer ID</td><td id="customerId"></td></tr>
+<tr><td>Contact No</td><td id="contactNo"></td></tr>
+<tr><td>Mail ID</td><td id="mailId"></td></tr>
+<tr><td>Address</td><td id="address"></td></tr>
+<tr><td>Plan Home</td><td id="planHome"></td></tr>
+<tr><td>Plan B</td><td id="planB"></td></tr>
+<tr><td>OTT Plan</td><td id="ottPlan"></td></tr>
+<tr><td>TV Plan</td><td id="tvPlan"></td></tr>
+<tr><td>Device Detail</td><td id="deviceDetail"></td></tr>
+<tr><td>Installation Date</td><td id="installationDate"></td></tr>
+<tr><td>Recharge Date</td><td id="rechargeDate"></td></tr>
+<tr><td>Expiry Date</td><td id="expiryDate"></td></tr>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
 
 <script>
 
@@ -59,43 +122,54 @@ const API_URL="https://script.google.com/macros/s/AKfycbzWi2x4UZiRpmOGsx5fCsBOaH
 
 async function login(){
 
+    document.getElementById("error").innerHTML="";
+    document.getElementById("dashboard").style.display="none";
+
     const loginid=document.getElementById("loginid").value.trim();
     const password=document.getElementById("password").value.trim();
 
-    document.getElementById("result").innerHTML="Loading...";
-
     try{
 
-        const url=
-        API_URL+
+        const url=API_URL+
         "?action=login"+
         "&loginid="+encodeURIComponent(loginid)+
         "&password="+encodeURIComponent(password);
 
         const response=await fetch(url);
 
-        const data=await response.json();
+        const text=await response.text();
 
-        if(data.success){
+        const result=JSON.parse(text);
 
-            document.getElementById("result").innerHTML=
-`Customer Name : ${data.data["Customer Name"]}
+        if(!result.success){
 
-Customer ID : ${data.data["Customer ID"]}
-
-Contact No : ${data.data["Contact No"]}
-
-Mail ID : ${data.data["Mail ID"]}`;
-
-        }else{
-
-            document.getElementById("result").innerHTML=data.message;
+            document.getElementById("error").innerHTML=result.message;
+            return;
 
         }
 
-    }catch(err){
+        const d=result.data;
 
-        document.getElementById("result").innerHTML=err;
+        document.getElementById("customerName").innerText=d["Customer Name"]||"";
+        document.getElementById("customerId").innerText=d["Customer ID"]||"";
+        document.getElementById("contactNo").innerText=d["Contact No"]||"";
+        document.getElementById("mailId").innerText=d["Mail ID"]||"";
+        document.getElementById("address").innerText=d["address"]||"";
+        document.getElementById("planHome").innerText=d["Plan home"]||"";
+        document.getElementById("planB").innerText=d["Plan B"]||"";
+        document.getElementById("ottPlan").innerText=d["OTT Plan"]||"";
+        document.getElementById("tvPlan").innerText=d["TV Plan"]||"";
+        document.getElementById("deviceDetail").innerText=d["Device Detail"]||"";
+        document.getElementById("installationDate").innerText=d["Installation  date"]||"";
+        document.getElementById("rechargeDate").innerText=d["Recharge date"]||"";
+        document.getElementById("expiryDate").innerText=d["Expiry Date"]||"";
+
+        document.getElementById("dashboard").style.display="block";
+
+    }
+    catch(err){
+
+        document.getElementById("error").innerHTML=err;
 
     }
 
