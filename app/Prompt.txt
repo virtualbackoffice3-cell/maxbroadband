@@ -1,0 +1,15 @@
+ok ab ham ek client ke lie ek pwa banane vale hen
+
+
+iske lie GIThub par ek ui banaenge and isme html, js and css alag alag rakhenge
+sara data ek google sheet me rahega
+
+to besiacally mujhe ek api banani he jisse google sheet ka data read karna he, sari sheets ka sare columns fetch karne hen bas
+
+
+to ye kesa rahega ?
+
+client google sheet me data update karega and vo updates pwa par show honge bas abhi itna hi karna he
+
+
+lets brain storm. tumhari kya openion he?

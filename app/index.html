@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -63,6 +63,8 @@
                         <span>Login Securely</span>
                         <span class="btn-spinner" aria-hidden="true"></span>
                     </button>
+
+                    <button class="install-btn login-install-btn" id="loginInstallButton" type="button">Install App</button>
                 </form>
 
                 <div class="trust-strip">
@@ -84,7 +86,10 @@
                     <p class="customer-id" id="headerCustomerId">ID</p>
                 </div>
                 <div class="header-actions">
-                    <button class="install-btn" id="installButton" type="button">Install</button>
+                    <button class="install-btn" id="installButton" type="button">Install App</button>
+                    <button class="refresh-btn" id="refreshButton" type="button" aria-label="Refresh account data">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.7 6.3A8 8 0 1 0 20 12h-2a6 6 0 1 1-1.8-4.2L13 11h8V3l-3.3 3.3Z"/></svg>
+                    </button>
                     <button class="logout-btn" id="logoutButton" type="button">Logout</button>
                     <button class="avatar" id="avatar" type="button" aria-label="Customer account">MB</button>
                 </div>
@@ -98,9 +103,23 @@
                 <span class="status-badge" id="statusBadge">-</span>
             </div>
 
+            <article class="expiry-warning" id="expiryWarning" hidden>
+                <div class="warning-icon" aria-hidden="true">!</div>
+                <div>
+                    <p class="warning-kicker">Recharge Required</p>
+                    <h3 id="warningTitle">Recharge Required</h3>
+                    <p id="warningMessage">Your broadband plan needs payment to keep the service running.</p>
+                    <div class="warning-amount">
+                        <span>Outstanding Amount</span>
+                        <strong id="warningAmount">Rs. 0</strong>
+                    </div>
+                    <button class="warning-action" id="rechargeNowButton" type="button">Recharge Now</button>
+                </div>
+            </article>
+
             <div class="success-toast" id="successToast" role="status">
                 <span class="checkmark"></span>
-                Login successful
+                <span id="toastText">Login successful</span>
             </div>
 
             <section class="tab-panel is-active" id="profileTab" aria-labelledby="profileNav">
@@ -127,10 +146,62 @@
                 <div class="cards-grid" id="planCards"></div>
             </section>
 
+            <section class="tab-panel" id="rechargeTab" aria-labelledby="rechargeNav">
+                <div class="section-heading">
+                    <p>Payment</p>
+                    <h3>Recharge</h3>
+                </div>
+                <article class="recharge-card" id="rechargeCard" hidden>
+                    <div class="recharge-card-bg"></div>
+                    <div class="recharge-head">
+                        <div>
+                            <p>Recharge Amount</p>
+                            <h3 id="rechargeAmount">Rs. 0</h3>
+                        </div>
+                        <span class="recharge-chip" id="rechargeStatus">Required</span>
+                    </div>
+                    <div class="qr-frame">
+                        <div class="qr-loader" id="qrLoader"></div>
+                        <div class="qr-code" id="qrCode" aria-label="UPI payment QR code"></div>
+                    </div>
+                    <div class="barcode-text" id="barcodeText">MaxBroadband Recharge</div>
+                    <div class="upi-apps" aria-label="Supported UPI apps">
+                        <button class="app-chip" type="button" data-upi-app="PhonePe" aria-label="Pay with PhonePe">
+                            <b class="app-icon phonepe">P</b>
+                            <span>PhonePe</span>
+                        </button>
+                        <button class="app-chip" type="button" data-upi-app="Google Pay" aria-label="Pay with Google Pay">
+                            <b class="app-icon gpay" aria-hidden="true"><i>G</i><em>Pay</em></b>
+                            <span>Google Pay</span>
+                        </button>
+                        <button class="app-chip" type="button" data-upi-app="Paytm" aria-label="Pay with Paytm">
+                            <b class="app-icon paytm">P</b>
+                            <span>Paytm</span>
+                        </button>
+                        <button class="app-chip" type="button" data-upi-app="BHIM" aria-label="Pay with BHIM">
+                            <b class="app-icon bhim">B</b>
+                            <span>BHIM</span>
+                        </button>
+                    </div>
+                    <div class="recharge-actions">
+                        <button class="copy-btn" id="copyUpiButton" type="button">Copy UPI ID</button>
+                    </div>
+                    <div class="payment-instructions">
+                        <h4>Payment Instructions</h4>
+                        <ul>
+                            <li>Scan QR using any UPI app.</li>
+                            <li>Tap any payment app above to continue payment.</li>
+                            <li>Payment usually updates within a few minutes.</li>
+                        </ul>
+                    </div>
+                    <p class="support-note" id="paymentNote">Share payment screenshot on mobile no - 9793322110</p>
+                </article>
+            </section>
+
             <div class="empty-state" id="emptyState">
                 <div class="empty-icon">!</div>
-                <h3>No details found</h3>
-                <p>Your account is connected, but these details are not available yet.</p>
+                <h3>Account details are being prepared</h3>
+                <p>Your login is valid, but some customer details are not available yet. Please check again shortly.</p>
             </div>
 
             <nav class="bottom-nav" aria-label="Primary navigation">
@@ -141,6 +212,11 @@
                 <button class="nav-btn" id="planNav" type="button" data-tab="planTab">
                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Zm2 4v2h10V8H7Zm0 4v2h7v-2H7Z"/></svg>
                     <span>My Plan</span>
+                </button>
+                <button class="nav-btn recharge-nav" id="rechargeNav" type="button" data-tab="rechargeTab" hidden>
+                    <span class="nav-badge" aria-label="Recharge required">!</span>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2H4V6Zm0 4h16v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8Zm3 4v2h6v-2H7Z"/></svg>
+                    <span>Recharge</span>
                 </button>
             </nav>
         </section>
@@ -173,3 +249,4 @@
     <script src="js/app.js" defer></script>
 </body>
 </html>
+
