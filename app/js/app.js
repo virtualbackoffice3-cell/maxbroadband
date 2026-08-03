@@ -219,10 +219,10 @@ function renderDashboard(data, { showLoginToast = true } = {}) {
     const status = getPlanStatus(expiryDate);
     const rechargeAmount = getField(data, "Recharge Amount");
 
-    els.greeting.textContent = getGreeting(customerName);
-    els.headerName.textContent = customerName;
-    els.headerCustomerId.textContent = `Welcome back - ${customerId}`;
-    els.avatar.textContent = getInitials(customerName);
+    els.greeting.textContent = getGreeting();
+    els.headerName.textContent = getFirstName(customerName);
+    els.headerCustomerId.textContent = customerId;
+    if (els.avatar) els.avatar.textContent = getInitials(customerName);
     els.planTitle.textContent = planHome;
     els.daysLeft.textContent = getDaysLeftText(expiryDate);
     els.warningAmount.textContent = rechargeAmount ? formatRechargeAmount(rechargeAmount) : "Amount unavailable";
@@ -660,14 +660,13 @@ function setGreeting() {
     els.greeting.textContent = greeting;
 }
 
-function getGreeting(name) {
-    const firstName = String(name || "Customer").trim().split(/\s+/)[0] || "Customer";
+function getGreeting() {
     const hour = new Date().getHours();
     const variants = {
-        morning: [`Good Morning, ${firstName}`, `Welcome back, ${firstName}`],
-        afternoon: [`Good Afternoon, ${firstName}`, `Welcome back, ${firstName}`],
-        evening: [`Good Evening, ${firstName}`, `Hope you're having a great day, ${firstName}`],
-        night: [`Good Night, ${firstName}`, `Welcome back, ${firstName}`]
+        morning: ["Good Morning", "Welcome back"],
+        afternoon: ["Good Afternoon", "Welcome back"],
+        evening: ["Good Evening", "Hope you're having a great day"],
+        night: ["Good Night", "Welcome back"]
     };
     let bucket = variants.night;
 
@@ -676,6 +675,10 @@ function getGreeting(name) {
     if (hour >= 17 && hour < 21) bucket = variants.evening;
 
     return bucket[new Date().getDate() % bucket.length];
+}
+
+function getFirstName(name) {
+    return String(name || "Customer").trim().split(/\s+/)[0] || "Customer";
 }
 
 function getInitials(name) {

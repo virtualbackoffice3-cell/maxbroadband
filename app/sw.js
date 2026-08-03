@@ -1,6 +1,6 @@
 ﻿"use strict";
 
-const CACHE_NAME = "maxbroadband-pwa-v8";
+const CACHE_NAME = "maxbroadband-pwa-v10";
 const APP_SHELL = [
     "./",
     "./index.html",
@@ -51,6 +51,8 @@ self.addEventListener("fetch", (event) => {
             .catch(() => caches.match(request).then((cached) => cached || caches.match("./offline.html")))
     );
 });
+
+
 
 
 

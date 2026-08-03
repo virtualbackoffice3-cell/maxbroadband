@@ -349,18 +349,18 @@ svg {
 
 .home-screen {
     position: relative;
-    padding: max(22px, env(safe-area-inset-top)) 18px calc(92px + var(--safe-bottom));
+    padding: max(18px, env(safe-area-inset-top)) 18px calc(92px + var(--safe-bottom));
     background:
-        linear-gradient(180deg, #0a63ff 0, #0a63ff 185px, #f8fbff 186px);
+        linear-gradient(180deg, #0a63ff 0, #0a63ff 166px, #f8fbff 167px);
 }
 
 .home-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 16px;
-    margin: 8px 0 22px;
-    padding: 12px;
+    gap: 10px;
+    margin: 6px 0 18px;
+    padding: 11px;
     color: #fff;
     background: linear-gradient(135deg, rgba(255, 255, 255, .16), rgba(255, 255, 255, .06));
     border: 1px solid rgba(255, 255, 255, .16);
@@ -370,52 +370,39 @@ svg {
 
 .greeting {
     color: rgba(255, 255, 255, .82);
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 800;
 }
 
 .home-header h2 {
-    max-width: 250px;
-    margin-top: 5px;
-    font-size: 30px;
-    line-height: 1.05;
-    overflow-wrap: anywhere;
+    max-width: 190px;
+    margin-top: 3px;
+    font-size: 23px;
+    line-height: 1.08;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .customer-id {
-    margin-top: 7px;
-    color: rgba(255, 255, 255, .72);
-    font-size: 12px;
-    font-weight: 800;
-}
-
-.avatar {
-    display: grid;
-    place-items: center;
-    width: 56px;
-    height: 56px;
-    color: #0a63ff;
-    background: #fff;
-    border-radius: 19px;
-    box-shadow: 0 12px 28px rgba(0, 37, 107, .22);
-    font-weight: 900;
+    display: none;
 }
 
 .header-actions {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 7px;
     flex: 0 0 auto;
 }
 
 .logout-btn {
-    min-height: 38px;
-    padding: 0 12px;
+    min-height: 36px;
+    padding: 0 10px;
     color: #fff;
     background: rgba(255, 255, 255, .18);
     border: 1px solid rgba(255, 255, 255, .26);
     border-radius: 13px;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 950;
     cursor: pointer;
     backdrop-filter: blur(12px);
@@ -454,19 +441,19 @@ svg {
 }
 
 .header-actions .install-btn {
-    min-height: 38px;
-    padding: 0 10px;
+    min-height: 36px;
+    padding: 0 9px;
     border-radius: 13px;
-    font-size: 11px;
+    font-size: 10px;
     white-space: nowrap;
 }
 
 .refresh-btn {
     display: grid;
     place-items: center;
-    width: 40px;
-    height: 40px;
-    min-width: 40px;
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
     color: #fff;
     background: rgba(255, 255, 255, .18);
     border: 1px solid rgba(255, 255, 255, .28);
@@ -999,6 +986,31 @@ svg {
 }
 
 @media (max-width: 360px) {
+    .home-header h2 {
+        max-width: 150px;
+        font-size: 21px;
+    }
+
+    .header-actions {
+        gap: 5px;
+    }
+
+    .header-actions .install-btn {
+        padding: 0 7px;
+        font-size: 9px;
+    }
+
+    .logout-btn {
+        padding: 0 8px;
+        font-size: 10px;
+    }
+
+    .refresh-btn {
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
+    }
+
     .recharge-actions {
         grid-template-columns: 1fr;
     }
