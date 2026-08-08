@@ -5,6 +5,7 @@ const STORAGE_KEY = "maxbroadband.rememberedLogin";
 const SESSION_KEY = "maxbroadband.customerSession";
 const PERSISTENT_SESSION_KEY = "maxbroadband.persistentSession";
 const DEFAULT_PAYMENT_NOTE = "MaxBroadband Recharge";
+const PAYMENT_NOTIFICATION_COOLDOWN_MINUTES = 10;
 
 const profileFields = [
     { key: "Customer Name", label: "Customer Name", icon: "ID" },
@@ -90,9 +91,11 @@ const els = {
 };
 
 let currentCredentials = null;
+let currentCustomerData = null;
 let deferredInstallPrompt = null;
 let touchStartY = 0;
 let isRefreshing = false;
+let isPaymentNotificationInProgress = false;
 
 document.addEventListener("DOMContentLoaded", init);
 
@@ -212,6 +215,8 @@ async function requestLogin(loginid, password) {
 }
 
 function renderDashboard(data, { showLoginToast = true } = {}) {
+    currentCustomerData = data || {};
+
     const customerName = getField(data, "Customer Name") || "Customer";
     const customerId = getField(data, "Customer ID") || "Customer ID unavailable";
     const planHome = getField(data, "Plan home") || "Broadband Plan";
@@ -647,6 +652,62 @@ function switchTab(tabId) {
     document.querySelectorAll(".nav-btn").forEach((button) => {
         button.classList.toggle("is-active", button.dataset.tab === tabId);
     });
+
+    if (tabId === "rechargeTab") {
+        window.setTimeout(notifyPaymentInitiated, 0);
+    }
+}
+
+async function notifyPaymentInitiated() {
+    if (!currentCustomerData) return;
+
+    const customerId = getField(currentCustomerData, "Customer ID");
+    if (!customerId || isPaymentNotificationInProgress || isPaymentNotificationInCooldown(customerId)) return;
+
+    isPaymentNotificationInProgress = true;
+
+    try {
+        const params = new URLSearchParams({
+            action: "payment_initiated",
+            customerName: getField(currentCustomerData, "Customer Name"),
+            customerId,
+            contactNo: getField(currentCustomerData, "Contact No"),
+            customerEmail: getField(currentCustomerData, "Mail ID"),
+            amount: getField(currentCustomerData, "Recharge Amount"),
+            paymentMode: "UPI",
+            plan: getField(currentCustomerData, "Plan home"),
+            expiryDate: getField(currentCustomerData, "Expiry Date")
+        });
+
+        const response = await fetch(`${API_URL}?${params.toString()}`, {
+            method: "GET",
+            cache: "no-store"
+        });
+
+        if (!response.ok) {
+            throw new Error("Payment notification request failed.");
+        }
+
+        const result = await response.json();
+        if (result && result.success === true) {
+            localStorage.setItem(getPaymentNotificationStorageKey(customerId), String(Date.now()));
+        }
+    } catch (error) {
+        console.error("Payment initiation notification failed:", error);
+    } finally {
+        isPaymentNotificationInProgress = false;
+    }
+}
+
+function isPaymentNotificationInCooldown(customerId) {
+    const lastSent = Number(localStorage.getItem(getPaymentNotificationStorageKey(customerId)));
+    if (!lastSent) return false;
+
+    return Date.now() - lastSent < PAYMENT_NOTIFICATION_COOLDOWN_MINUTES * 60 * 1000;
+}
+
+function getPaymentNotificationStorageKey(customerId) {
+    return `maxbroadband.paymentNotification.${customerId}`;
 }
 
 function setGreeting() {
